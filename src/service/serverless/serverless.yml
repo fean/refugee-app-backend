@@ -15,7 +15,6 @@ provider:
   region: eu-central-1
   environment: ${file(./serverless/environment.yml)}
   httpApi:
-    id: ${ssm:/app/apigwv2/gateway/id~true}
     payload: '2.0'
 
 custom:
