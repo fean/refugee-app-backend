@@ -86,7 +86,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (event): Promis
           postal: account.details.postal,
           city: account.details.city,
           country: account.details.country,
-          coords: account.details.coords.coordinates,
+          coords: account.details.coords?.coordinates as [number, number],
         }
       } as AccountResponse)
     }

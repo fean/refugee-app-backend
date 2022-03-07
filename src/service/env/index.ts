@@ -8,7 +8,7 @@ class Environment {
   }
 
   public static get mapBoxApiToken(): string {
-    return process.env.MAPBOX_API_TOKEN
+    return process.env.MAPBOX_API_TOKEN as string
   }
 }
 

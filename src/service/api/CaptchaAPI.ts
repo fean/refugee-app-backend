@@ -14,7 +14,7 @@ export class CaptchaAPI {
 
       return response.data?.success ?? false
     } catch (error) {
-      console.warn('Captcha request failed', error.message)
+      console.warn('Captcha request failed', (error as Error)?.message)
       return false
     }
   }

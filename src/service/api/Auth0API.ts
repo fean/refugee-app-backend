@@ -12,7 +12,7 @@ export class Auth0API {
   private static lastTokenExp?: number
 
   private static async getMgmtApiToken(): Promise<string> {
-    const isTokenValid = Auth0API.lastToken && Date.now() < Auth0API.lastTokenExp * 1000
+    const isTokenValid = Auth0API.lastToken && Date.now() < (Auth0API.lastTokenExp ?? 8640000000000000) * 1000
     if (!isTokenValid) {
       const result = await Auth0API.client.clientCredentialsFlow({
         domain: `https://${Auth0Environment.domain}`,
@@ -25,7 +25,7 @@ export class Auth0API {
       Auth0API.lastTokenExp = getTokenClaims<{ exp: number }>(result.accessToken).exp
     }
 
-    return Auth0API.lastToken
+    return Auth0API.lastToken as string
   }
 
   public static async createUserAccount(email: string): Promise<string> {
