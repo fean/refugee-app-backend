@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "lib": ["ES2019", "ES2020.promise", "ES2020.bigint", "ES2020.string"]
+  },
+  "include": [
+    "index.d.ts",
+    "jest.setup.ts",
+    "jest.config.js"
+  ],
+  "exclude": ["node_modules", "./**/*.spec.ts"]
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2019", "ES2020.promise", "ES2020.bigint", "ES2020.string"],
+    "experimentalDecorators": true
+  },
+  "include": [
+    "index.d.ts"
+  ],
+  "exclude": ["node_modules", "./**/*.spec.ts"]
+}

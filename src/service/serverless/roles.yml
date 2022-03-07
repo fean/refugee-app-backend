@@ -1,0 +1,16 @@
+Resources:
+#  DebtorEntityEventsRole:
+#    Type: AWS::IAM::Role
+#    Properties:
+#      RoleName: DebtorEntityEventsRole
+#      AssumeRolePolicyDocument: ${file(serverless/policies/assumption.yml):LambdaAssumeRolePolicyDocument}
+#      ManagedPolicyArns:
+#        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+#      Policies:
+#        - PolicyName: DebtorEntityEventPolicy
+#          PolicyDocument:
+#            Version: '2012-10-17'
+#            Statement:
+#              - ${file(serverless/policies/queue.yml):PublishMainBusEvents}
+#              - ${file(serverless/policies/DynamoDBPolicies.yml):ConsumeDebtorStream}
+#              - ${file(serverless/policies/DynamoDBPolicies.yml):ReadDebtorDataStorage}

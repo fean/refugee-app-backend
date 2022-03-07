@@ -1,0 +1,10 @@
+{
+  "name": "refugee-service",
+  "identifier": "##API_URL##",
+  "allow_offline_access": true,
+  "scopes": [],
+  "enforce_policies": true,
+  "token_dialect": "access_token",
+  "token_lifetime": 7200,
+  "token_lifetime_for_web": 7200
+}

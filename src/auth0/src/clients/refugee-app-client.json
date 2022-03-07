@@ -1,0 +1,25 @@
+{
+  "name": "refugee-app-client",
+  "app_type": "regular_web",
+  "refresh_token": {
+    "rotation_type": "rotating",
+    "expiration_type": "expiring"
+  },
+  "oidc_conformant": true,
+  "grant_types": [
+    "authorization_code",
+    "refresh_token",
+    "implicit",
+    "http://auth0.com/oauth/grant-type/passwordless/otp"
+  ],
+  "callbacks": [
+    "http://localhost:3000/api/callback",
+    "http://localhost:3000/register/integration",
+    "http://localhost:3000/",
+    "https://##APP_URL##/api/callback"
+  ],
+  "allowed_logout_urls": [
+    "https://##APP_URL##/",
+    "http://localhost:3000/"
+  ]
+}

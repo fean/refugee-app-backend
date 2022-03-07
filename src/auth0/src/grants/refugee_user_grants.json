@@ -1,0 +1,5 @@
+{
+  "client_id": "refugee-app-client",
+  "audience": "##API_URL##",
+  "scope": []
+}

@@ -1,0 +1,35 @@
+service:
+  name: samaritan-api
+
+plugins:
+  - serverless-webpack
+
+package:
+  include:
+    - .webpack/*.js
+    - .webpack/*.map
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  environment: ${file(./serverless/environment.yml)}
+  httpApi:
+    id: ${ssm:/app/apigwv2/gateway/id~true}
+    payload: '2.0'
+
+custom:
+  webpack:
+    webpackConfig: webpack.config.js
+    packager: yarn
+    concurrency: 5
+    individually: true
+  prune:
+    automatic: true
+    number: 3
+
+functions:
+  ${file(./finance/serverless/functions.yml)}
+
+resources:
+  - ${file(./finance/serverless/roles.yml)}

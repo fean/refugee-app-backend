@@ -1,0 +1,7 @@
+GetApiStatus:
+  handler: control/functions/getApiStatus.default
+  role: HandleSignedDebtorRole
+  events:
+    - httpApi:
+        method: GET
+        path: /status
