@@ -1,5 +1,5 @@
 service:
-  name: samaritan-api
+  name: samaritan-app-api
 
 plugins:
   - serverless-webpack
@@ -28,7 +28,5 @@ custom:
     number: 3
 
 functions:
-  ${file(./finance/serverless/functions.yml)}
+  ${file(./serverless/functions.yml)}
 
-resources:
-  - ${file(./finance/serverless/roles.yml)}

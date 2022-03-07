@@ -1,7 +1,14 @@
-GetApiStatus:
-  handler: control/functions/getApiStatus.default
-  role: HandleSignedDebtorRole
+#GetApiStatus:
+#  handler: control/functions/getApiStatus.default
+#  role: HandleSignedDebtorRole
+#  events:
+#    - httpApi:
+#        method: GET
+#        path: /status
+
+PostPartner:
+  handler: control/partners/post.handler
   events:
     - httpApi:
-        method: GET
-        path: /status
+        method: POST
+        path: /partners

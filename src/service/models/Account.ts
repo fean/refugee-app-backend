@@ -43,7 +43,7 @@ const accountSchema = new mongoose.Schema<AccountModel>({
     postal: String,
     city: String,
     country: String,
-    email: String,
+    email: { type: String, unique: true },
     phone: String,
     coords: {
       type: { type: String, enum: ['Point'] },
@@ -53,4 +53,4 @@ const accountSchema = new mongoose.Schema<AccountModel>({
   }
 })
 
-export const Account = mongoose.model('Account', accountSchema)
+export const Account = mongoose.model<AccountModel>('Account', accountSchema)

@@ -3,11 +3,22 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "deploy": "cd src/service && serverless deploy --stage prod --verbose --config serverless/serverless.yml"
+  },
   "dependencies": {
     "@trunkrs/common": "^1.5.14",
-    "mongoose": "^6.2.4"
+    "axios": "^0.26.0",
+    "bson-ext": "^4.0.2",
+    "joi": "^17.6.0",
+    "kerberos": "^2.0.0",
+    "mongodb": "^4.4.1",
+    "mongodb-client-encryption": "^2.0.0",
+    "mongoose": "^6.2.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.93",
     "@types/jest": "^26.0.12",
     "@types/node": "^14.11.2",
     "@types/typescript": "^2.0.0",
