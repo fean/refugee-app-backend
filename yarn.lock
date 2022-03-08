@@ -361,6 +361,14 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@haftahave/serverless-ses-template@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@haftahave/serverless-ses-template/-/serverless-ses-template-4.0.3.tgz#b3361023abce81d08de9e2c4c15d7ca512ba9bb7"
+  integrity sha512-6VgDr4ivb2vaBzrvU7YHfSjUqSyiKeixuzC4XRvDmUwTinRZlBwTHQMKrHb6l4PG9HBEtlwgeTZ/nRBS8iNSOg==
+  dependencies:
+    chalk "^4.1.2"
+    cli-table "^0.3.11"
+
 "@hapi/hoek@^9.0.0":
   version "9.2.1"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.1.tgz#9551142a1980503752536b5050fd99f4a7f13b17"
@@ -2079,6 +2087,21 @@ aws-sdk@^2.1078.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+aws-sdk@^2.1089.0:
+  version "2.1089.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1089.0.tgz#198ee116f3d6f70cd26cd6f7efa6adba46a54768"
+  integrity sha512-QhawXCxhOLR+SJHuKXNzyx1hd+oA1HqaDRjbeTKUrz7g2KF4EyPWvLwzf1fNaOTPK3Vp3JDYijusdKlfV69efw==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.16.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
@@ -3246,6 +3269,13 @@ cli-sprintf-format@^1.1.1:
     sprintf-kit "^2.0.1"
     supports-color "^6.1.0"
 
+cli-table@^0.3.11:
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/cli-table/-/cli-table-0.3.11.tgz#ac69cdecbe81dccdba4889b9a18b7da312a9d3ee"
+  integrity sha512-IqLQi4lO0nIB4tcdTpN4LCB9FI3uqrJZK7RC515EnhZ6qBaglkIgICb1wjeAqpdoOabm1+SuQtkXIPdYC93jhQ==
+  dependencies:
+    colors "1.0.3"
+
 cli-width@^2.0.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.1.tgz#b0433d0b4e9c847ef18868a4ef16fd5fc8271c48"
@@ -3381,7 +3411,7 @@ colornames@^1.1.1:
   resolved "https://registry.yarnpkg.com/colornames/-/colornames-1.1.1.tgz#f8889030685c7c4ff9e2a559f5077eb76a816f96"
   integrity sha1-+IiQMGhcfE/54qVZ9Qd+t2qBb5Y=
 
-colors@1.0.x:
+colors@1.0.3, colors@1.0.x:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
   integrity sha1-BDP0TYCWgP3rYO0mDxsMJi6CpAs=

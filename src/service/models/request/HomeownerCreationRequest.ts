@@ -11,6 +11,7 @@ export const homeownerCreationSchema = Joi.object<HomeownerCreationRequest>({
   postal: Joi.string().required(),
   city: Joi.string().required(),
   country: Joi.string().min(2).max(2).required(),
+  beds: Joi.number().required(),
   ownershipType: Joi.string()
     .valid(...Object.values(OwnerShipType))
     .required(),
@@ -26,5 +27,6 @@ export interface HomeownerCreationRequest {
   postal: string
   city: string
   country: string
+  beds: number
   ownershipType: OwnerShipType
 }

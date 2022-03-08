@@ -3,6 +3,7 @@ import { createResponse, createValidationError, getSubject } from '../../../util
 import { contactApprovalSchema } from '../../../models/request'
 import { ActivityState, ApprovalState, ErrorCodes } from '../../../models/enum'
 import { Account, connect, Contact, disconnect } from '../../../models'
+import { Email, Template } from '../../../api'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -34,7 +35,19 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       contact.state = ApprovalState.Approved
       await contact.save()
 
-      // TODO: Send email & push
+      await Email.sendEmail(
+        Template.HomeownerApproval,
+        {
+          homeowner_name: contact.receiver.name,
+          homeowner_address: contact.receiver.address,
+          homeowner_post: contact.receiver.postal,
+          homeowner_city: contact.receiver.city,
+          homeowner_beds: contact.receiver.beds,
+          homeowner_phone: contact.receiver.phone,
+          homeowner_email: contact.receiver.email,
+        },
+        contact.creator.email as string,
+      )
 
       return createResponse(204)
     }

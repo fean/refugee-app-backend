@@ -65,9 +65,12 @@ accountSchema.statics.getByExternalRef = async function (
   this: typeof Account,
   reference: string,
 ): Promise<typeof Account> {
-  const result = await this.findOne({
-    authRef: reference,
-  })
+  const result = await this.findOne(
+    {
+      authRef: reference,
+    },
+    '_id state details',
+  )
 
   return result as any
 } as any

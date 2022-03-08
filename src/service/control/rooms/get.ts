@@ -30,6 +30,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
         city: result.location.city,
         country: result.location.countryCode,
         coords: result.location.coords.coordinates,
+        beds: result.beds,
       })),
     )
   } catch (error) {

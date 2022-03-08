@@ -32,6 +32,20 @@ PostAuthStart:
         method: POST
         path: /auth/start
 
+GetVerifyEmail:
+  handler: control/auth/verify/get.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /auth/verify
+
+GetApprovePartner:
+  handler: control/auth/approve/get.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /auth/approve
+
 GetMe:
   handler: control/me/get.handler
   events:
@@ -69,10 +83,19 @@ PostContact:
           name: auth0Authorizer
 
 PutContactApproval:
-  handler: control/contacts/approval/put.ts
+  handler: control/contacts/approval/put.handler
   events:
     - httpApi:
         method: PUT
         path: /contacts/approval
+        authorizer:
+          name: auth0Authorizer
+
+PostPushToken:
+  handler: control/me/push-token/post.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /me/push-token
         authorizer:
           name: auth0Authorizer

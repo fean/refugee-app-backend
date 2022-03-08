@@ -10,6 +10,14 @@ class Environment {
   public static get mapBoxApiToken(): string {
     return process.env.MAPBOX_API_TOKEN as string
   }
+
+  public static get emailIdentity(): string {
+    return 'Samaritan <crew@samaritan-app.eu>'
+  }
+
+  public static get crewDestinations(): string[] {
+    return ['feanaro101@gmail.com', 'loekhertog@gmail.com', 'jagoverzuu@gmail.com']
+  }
 }
 
 export default Environment

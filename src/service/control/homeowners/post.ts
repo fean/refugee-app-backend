@@ -1,9 +1,9 @@
 import { createResponse, createValidationError, getRandomToken, sanitizePhone } from '../../utils'
-import { Auth0API, CaptchaAPI, MapBoxApi } from '../../api'
+import { Auth0API, CaptchaAPI, Email, MapBoxApi, Template } from '../../api'
 
 import { AccountType, ActivityState, ErrorCodes } from '../../models/enum'
 import { homeownerCreationSchema } from '../../models/request'
-import { connect, disconnect, Account, Room } from '../../models'
+import { Account, connect, disconnect, Room } from '../../models'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -76,6 +76,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     const room = new Room({
       ownerShip: request.ownershipType,
       owner: account._id,
+      beds: request.beds,
       location: {
         address: account.details.address,
         postal: account.details.postal,
@@ -86,7 +87,13 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     })
     await room.save()
 
-    // TODO: Send email confirm email with $.mailActivationKey
+    await Email.sendEmail(
+      Template.ConfirmEmail,
+      {
+        action_url: `https://api.samaritan-app.eu/auth/verify?token=${account.mailActivationKey}`,
+      },
+      account.details.email as string,
+    )
 
     return createResponse(201, {
       id: account._id.toString(),

@@ -5,11 +5,12 @@ import {
   sanitizePhone,
   sanitizeUrl,
 } from '../../utils'
-import { Auth0API, CaptchaAPI, MapBoxApi } from '../../api'
+import { Auth0API, CaptchaAPI, Email, MapBoxApi, Template } from '../../api'
 
 import { AccountType, ActivityState, ErrorCodes } from '../../models/enum'
 import { partnerCreationSchema } from '../../models/request'
 import { connect, disconnect, Account } from '../../models'
+import Environment from '../../env'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -83,7 +84,33 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
 
     await account.save()
 
-    // TODO: Send email confirm email with $.mailActivationKey
+    await Promise.all([
+      Email.sendEmail(
+        Template.ConfirmEmail,
+        {
+          action_url: `https://api.samaritan-app.eu/auth/verify?token=${account.mailActivationKey}`,
+        },
+        account.details.email as string,
+      ),
+      Email.sendEmail(
+        Template.PartnerApproval,
+        {
+          org_name: account.details.orgName,
+          org_contact: account.details.name,
+          org_address: account.details.address,
+          org_postal: account.details.postal,
+          org_city: account.details.city,
+          org_country: account.details.country,
+          org_phone: account.details.phone,
+          org_email: account.details.email,
+          org_website: account.details.website,
+          org_mission: account.details.mission,
+          org_approval: account.approvalReason,
+          approve_url: `https://api.samaritan-app.eu/auth/approve?token=${account.activationKey}`,
+        },
+        ...Environment.crewDestinations,
+      ),
+    ])
 
     return createResponse(201, {
       id: account._id.toString(),

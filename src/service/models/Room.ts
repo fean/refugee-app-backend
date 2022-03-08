@@ -6,6 +6,7 @@ interface RoomProps {
   _id: mongoose.Types.ObjectId
   owner: mongoose.Types.ObjectId
   ownerShip: OwnerShipType
+  beds: number
   location: {
     address: string
     postal: string
@@ -31,6 +32,7 @@ const roomSchema = new mongoose.Schema<RoomProps, RoomModel>({
     type: String,
     enum: Object.values(OwnerShipType),
   } as any,
+  beds: Number,
   location: {
     address: String,
     postal: String,

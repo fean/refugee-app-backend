@@ -11,7 +11,7 @@ export interface ContactProps {
   _id: mongoose.Types.ObjectId
   state: ApprovalState
   creator: AccountDetailsRef
-  receiver: AccountDetailsRef
+  receiver: AccountDetailsRef & { beds?: number }
 }
 
 export interface ContactModel extends mongoose.Model<ContactProps> {
@@ -61,6 +61,7 @@ const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
       type: { type: String, enum: ['Point'] },
       coordinates: [Number],
     },
+    beds: Number,
     website: String,
   },
 })

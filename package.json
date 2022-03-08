@@ -7,7 +7,9 @@
     "deploy": "cd src/service && serverless deploy --stage prod --verbose --config serverless/serverless.yml"
   },
   "dependencies": {
+    "@haftahave/serverless-ses-template": "^4.0.3",
     "@trunkrs/common": "^1.5.14",
+    "aws-sdk": "^2.1089.0",
     "axios": "^0.26.0",
     "bson-ext": "^4.0.2",
     "date-fns": "^2.28.0",

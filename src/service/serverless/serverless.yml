@@ -3,9 +3,9 @@ service:
 
 plugins:
   - serverless-webpack
+  - '@haftahave/serverless-ses-template'
 
 package:
-  individually: true
   include:
     - .webpack/*.js
     - .webpack/*.map
@@ -15,6 +15,17 @@ provider:
   runtime: nodejs12.x
   region: eu-central-1
   environment: ${file(./serverless/environment.yml)}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Resource:
+            - arn:aws:ses:eu-central-1:070386867730:identity/samaritan-app.eu
+          Action:
+            - ses:SendTemplatedEmail
+          Condition:
+            StringEquals:
+              'ses:FromAddress': 'crew@samaritan-app.eu'
   httpApi:
     payload: '2.0'
     authorizers:
@@ -34,6 +45,8 @@ custom:
   prune:
     automatic: true
     number: 3
+  sesTemplatesAddStageAlias: false
+  sesTemplatesConfigFile: '../../scripts/template.config.js'
 
 functions:
   ${file(./serverless/functions.yml)}

@@ -1,14 +1,13 @@
 import * as mongoose from 'mongoose'
 
-import { createResponse, createValidationError } from '../../utils'
-
-import { getSubject } from '../../utils'
+import { createResponse, createValidationError, getSubject } from '../../utils'
 
 import { partnerContactRequestSchema } from '../../models/request'
-import { ErrorCodes, ActivityState, ApprovalState } from '../../models/enum'
+import { ActivityState, ApprovalState, ErrorCodes } from '../../models/enum'
 import { Account, connect, Contact, disconnect, Room } from '../../models'
 
 import { mapToPartnerContact } from './get'
+import { Email, Template } from '../../api'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -44,11 +43,17 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     const contact = new Contact({
       state: ApprovalState.Pending,
       creator: { _id: account._id, ...account.details },
-      receiver: { _id: roomOwner._id, ...roomOwner.details },
+      receiver: { _id: roomOwner._id, ...roomOwner.details, beds: room.beds },
     })
     await contact.save()
 
-    // TODO: Do push request & email
+    await Email.sendEmail(
+      Template.ContactRequest,
+      {
+        org_name: contact.creator.orgName,
+      },
+      contact.receiver.email as string,
+    )
 
     return createResponse(201, mapToPartnerContact(contact))
   } catch (error) {
