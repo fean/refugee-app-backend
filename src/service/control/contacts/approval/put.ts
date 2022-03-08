@@ -31,6 +31,10 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       return createResponse(404, { code: ErrorCodes.UnknownEntity })
     }
 
+    if (contact.receiver._id.toString() !== account._id.toString()) {
+      return createResponse(403, { code: ErrorCodes.NotOwner })
+    }
+
     if (request.approval === ApprovalState.Approved) {
       contact.state = ApprovalState.Approved
       await contact.save()

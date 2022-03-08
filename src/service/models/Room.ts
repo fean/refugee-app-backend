@@ -61,7 +61,7 @@ roomSchema.statics.findInArea = async function findInArea(
         },
         distanceField: 'distance',
         spherical: true,
-        maxDistance,
+        maxDistance: maxDistance,
       },
     },
   ])

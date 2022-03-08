@@ -5,7 +5,7 @@ export enum Template {
   AccountApproval = 'approval-account',
   ConfirmEmail = 'confirm',
   HomeownerApproval = 'approval-homeowner',
-  PartnerApproval = 'partner-approval',
+  PartnerApproval = 'partner-request',
   ContactRequest = 'contact-request',
 }
 

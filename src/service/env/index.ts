@@ -15,6 +15,10 @@ class Environment {
     return 'Samaritan <crew@samaritan-app.eu>'
   }
 
+  public static get approvalKey(): string {
+    return process.env.APPROVAL_KEY as string
+  }
+
   public static get crewDestinations(): string[] {
     return ['feanaro101@gmail.com', 'loekhertog@gmail.com', 'jagoverzuu@gmail.com']
   }

@@ -2,17 +2,25 @@ import { createResponse } from '../../../utils'
 import { ActivityState, ErrorCodes } from '../../../models/enum'
 import { Account, connect, disconnect } from '../../../models'
 import { Email, Template } from '../../../api'
+import Environment from '../../../env'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
-    const { token } =
-      event.queryStringParameters as AWSLambda.APIGatewayProxyEventQueryStringParameters
+    const { token, key } =
+      (event.queryStringParameters as AWSLambda.APIGatewayProxyEventQueryStringParameters) ?? {}
     if (!token) {
       return {
         statusCode: 400,
         body: '❌ Partner could not be approved!',
+      }
+    }
+
+    if (!key || key !== Environment.approvalKey) {
+      return {
+        statusCode: 400,
+        body: '❌ Provider the approval key!',
       }
     }
 

@@ -7,7 +7,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
     const { token } =
-      event.queryStringParameters as AWSLambda.APIGatewayProxyEventQueryStringParameters
+      (event.queryStringParameters as AWSLambda.APIGatewayProxyEventQueryStringParameters) ?? {}
     if (!token) {
       return {
         statusCode: 400,
@@ -20,7 +20,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     if (!account) {
       return {
         statusCode: 404,
-        body: '❌ Email could not be verified!',
+        body: '✅ Email has been confirmed! Continue in the app!',
       }
     }
 

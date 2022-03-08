@@ -8,4 +8,5 @@ export enum ErrorCodes {
   UnknownEntity = 'UNKNOWN_ENTITY',
   AccountInactive = 'ACCOUNT_INACTIVE',
   AccountBad = 'ACCOUNT_BAD',
+  NotOwner = 'NOT_OWNER',
 }
