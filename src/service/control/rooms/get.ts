@@ -1,6 +1,6 @@
 import { createResponse, getSubject } from '../../utils'
 import { ActivityState, ErrorCodes } from '../../models/enum'
-import { Account, connect, Room } from '../../models'
+import { Account, connect, disconnect, Room } from '../../models'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -11,13 +11,14 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     await connect()
     const account = await Account.getByExternalRef(subject)
     if (!account) {
-      return createResponse(404, { code: ErrorCodes.UnknownEntity })
+      return createResponse(400, { code: ErrorCodes.AccountBad })
     }
     if (account.state === ActivityState.Inactive) {
       return createResponse(403, { code: ErrorCodes.AccountInactive })
     }
 
-    const { distance, lat, lng } = event.queryStringParameters
+    const { distance, lat, lng } =
+      event.queryStringParameters as AWSLambda.APIGatewayProxyEventQueryStringParameters
     const results = await Room.findInArea([Number(lng), Number(lat)], Number(distance))
 
     return createResponse(
@@ -34,5 +35,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   } catch (error) {
     console.error(error)
     return createResponse(500, { code: ErrorCodes.Generic })
+  } finally {
+    await disconnect()
   }
 }

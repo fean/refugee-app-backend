@@ -61,6 +61,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       state: ActivityState.Inactive,
       activationKey: getRandomToken(),
       mailActivationKey: getRandomToken(),
+      approvalReason: request.approvalReason,
       details: {
         type: AccountType.Partner,
         orgName: request.orgName,
@@ -76,6 +77,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
           coordinates,
         },
         website: sanitizeUrl(request.website),
+        mission: request.mission,
       },
     })
 

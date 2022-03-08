@@ -1,9 +1,10 @@
+import { AxiosError } from 'axios'
+
 import { createResponse, createValidationError } from '../../../utils'
 import { Auth0API } from '../../../api'
 
 import { authStartSchema } from '../../../models/request'
 import { ErrorCodes } from '../../../models/enum'
-import { AxiosError } from 'axios'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -14,20 +15,16 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       return createValidationError(error)
     }
 
-    try {
-      await Auth0API.sendOTPEmail(request.email)
-    } catch (error) {
-      const axiosError = error as AxiosError
-      if (axiosError.response && axiosError.response.status === 400) {
-        return createResponse(400, { code: ErrorCodes.UnknownAccount })
-      } else {
-        throw error
-      }
-    }
+    await Auth0API.sendOTPEmail(request.email)
 
     return createResponse(201)
   } catch (error) {
-    console.error(error)
-    return createResponse(500, { code: ErrorCodes.Generic })
+    const axiosError = error as AxiosError
+    if (axiosError.response && axiosError.response.status === 400) {
+      return createResponse(400, { code: ErrorCodes.UnknownAccount })
+    } else {
+      console.error(error)
+      return createResponse(500, { code: ErrorCodes.Generic })
+    }
   }
 }

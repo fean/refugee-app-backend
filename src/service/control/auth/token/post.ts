@@ -1,9 +1,10 @@
+import { AxiosError } from 'axios'
+
 import { createResponse, createValidationError } from '../../../utils'
 import { Auth0API } from '../../../api'
 
 import { tokenRequestSchema } from '../../../models/request'
 import { ErrorCodes } from '../../../models/enum'
-import { AxiosError } from 'axios'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,

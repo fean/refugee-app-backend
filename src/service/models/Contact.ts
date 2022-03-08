@@ -15,7 +15,10 @@ export interface ContactProps {
 }
 
 export interface ContactModel extends mongoose.Model<ContactProps> {
-  findUserContacts(userId: string): Promise<ContactProps[]>
+  findUserContacts(
+    userId: string | mongoose.Types.ObjectId,
+    type: AccountType,
+  ): Promise<ContactProps[]>
 }
 
 const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
@@ -64,11 +67,14 @@ const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
 
 contactSchema.statics.findUserContacts = async function (
   this: typeof Contact,
-  userId: string,
+  userId: mongoose.Types.ObjectId,
+  type: AccountType,
 ): Promise<Array<ContactProps>> {
-  const userObjectId = new mongoose.Types.ObjectId(userId)
+  const userObjectId = typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId
+  const field = type === AccountType.Homeowner ? 'receiver._id' : 'creator._id'
+
   const results = await this.find({
-    $or: [{ 'creator._id': userObjectId }, { 'receiver._id': userObjectId }],
+    [field]: userObjectId,
   })
 
   return results

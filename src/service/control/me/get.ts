@@ -1,6 +1,6 @@
 import { createResponse, getSubject } from '../../utils'
 import { ErrorCodes } from '../../models/enum'
-import { Account, connect } from '../../models'
+import { Account, connect, disconnect } from '../../models'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -35,5 +35,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   } catch (error) {
     console.error(error)
     return createResponse(500, { code: ErrorCodes.Generic })
+  } finally {
+    await disconnect()
   }
 }

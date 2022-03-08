@@ -17,6 +17,7 @@ export interface AccountDetails {
     coordinates: [number, number]
   }
   website?: string
+  mission?: string
 }
 
 interface AccountProps {
@@ -26,6 +27,7 @@ interface AccountProps {
   mailActivationKey?: string
   activationKey?: string
   pushTokens: string[]
+  approvalReason?: string
   details: AccountDetails
 }
 
@@ -39,6 +41,7 @@ const accountSchema = new mongoose.Schema<AccountProps, AccountModel>({
   mailActivationKey: String,
   activationKey: String,
   pushTokens: [String],
+  approvalReason: String,
   details: {
     type: { type: String, enum: Object.values(AccountType) } as any,
     orgName: String,
@@ -54,6 +57,7 @@ const accountSchema = new mongoose.Schema<AccountProps, AccountModel>({
       coordinates: [Number],
     },
     website: String,
+    mission: String,
   },
 })
 

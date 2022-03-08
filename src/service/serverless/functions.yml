@@ -41,11 +41,38 @@ GetMe:
         authorizer:
           name: auth0Authorizer
 
-GetMapPlaces:
-  handler: /places/get.ts
+GetRooms:
+  handler: control/rooms/get.handler
   events:
     - httpApi:
         method: GET
-        path: /places
+        path: /rooms
+        authorizer:
+          name: auth0Authorizer
+
+GetContacts:
+  handler: control/contacts/get.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /contacts
+        authorizer:
+          name: auth0Authorizer
+
+PostContact:
+  handler: control/contacts/post.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /contacts
+        authorizer:
+          name: auth0Authorizer
+
+PutContactApproval:
+  handler: control/contacts/approval/put.ts
+  events:
+    - httpApi:
+        method: PUT
+        path: /contacts/approval
         authorizer:
           name: auth0Authorizer
