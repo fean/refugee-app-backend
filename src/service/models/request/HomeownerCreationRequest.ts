@@ -1,4 +1,5 @@
 import * as Joi from 'joi'
+import { OwnerShipType } from '../enum'
 
 export const homeownerCreationSchema = Joi.object<HomeownerCreationRequest>({
   captchaToken: Joi.string().required(),
@@ -10,6 +11,9 @@ export const homeownerCreationSchema = Joi.object<HomeownerCreationRequest>({
   postal: Joi.string().required(),
   city: Joi.string().required(),
   country: Joi.string().min(2).max(2).required(),
+  ownershipType: Joi.string()
+    .valid(...Object.values(OwnerShipType))
+    .required(),
 })
 
 export interface HomeownerCreationRequest {
@@ -22,4 +26,5 @@ export interface HomeownerCreationRequest {
   postal: string
   city: string
   country: string
+  ownershipType: OwnerShipType
 }

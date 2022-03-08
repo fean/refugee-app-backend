@@ -19,7 +19,7 @@ interface RoomProps {
 }
 
 interface RoomModel extends mongoose.Model<RoomProps> {
-  findInArea(coords: [number, number], maxDistance?: number): Promise<typeof Room[]>
+  findInArea(coords: [number, number], maxDistance?: number): Promise<RoomProps[]>
 }
 
 const roomSchema = new mongoose.Schema<RoomProps, RoomModel>({

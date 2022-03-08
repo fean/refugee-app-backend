@@ -3,7 +3,7 @@ import { Auth0API, CaptchaAPI, MapBoxApi } from '../../api'
 
 import { AccountType, ActivityState, ErrorCodes } from '../../models/enum'
 import { homeownerCreationSchema } from '../../models/request'
-import { connect, disconnect, Account } from '../../models'
+import { connect, disconnect, Account, Room } from '../../models'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -72,6 +72,19 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     })
 
     await account.save()
+
+    const room = new Room({
+      ownerShip: request.ownershipType,
+      owner: account._id,
+      location: {
+        address: account.details.address,
+        postal: account.details.postal,
+        city: account.details.city,
+        countryCode: account.details.country,
+        coords: account.details.coords,
+      },
+    })
+    await room.save()
 
     // TODO: Send email confirm email with $.mailActivationKey
 

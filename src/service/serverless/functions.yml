@@ -1,11 +1,3 @@
-#GetApiStatus:
-#  handler: control/functions/getApiStatus.default
-#  role: HandleSignedDebtorRole
-#  events:
-#    - httpApi:
-#        method: GET
-#        path: /status
-
 HandleEmailBounce:
   handler: control/functions/handleBounce.handler
   events:
@@ -46,5 +38,14 @@ GetMe:
     - httpApi:
         method: GET
         path: /me
+        authorizer:
+          name: auth0Authorizer
+
+GetMapPlaces:
+  handler: /places/get.ts
+  events:
+    - httpApi:
+        method: GET
+        path: /places
         authorizer:
           name: auth0Authorizer

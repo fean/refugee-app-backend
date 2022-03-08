@@ -6,4 +6,6 @@ export enum ErrorCodes {
   BadOTP = 'BAD_OTP',
   EmailAlreadyExists = 'EMAIL_KNOWN',
   UnknownEntity = 'UNKNOWN_ENTITY',
+  AccountInactive = 'ACCOUNT_INACTIVE',
+  AccountBad = 'ACCOUNT_BAD',
 }
