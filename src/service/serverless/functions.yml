@@ -6,6 +6,12 @@
 #        method: GET
 #        path: /status
 
+HandleEmailBounce:
+  handler: control/functions/handleBounce.handler
+  events:
+    - sns:
+        arn: arn:aws:sns:eu-central-1:070386867730:bounce-feedback-topic
+
 PostPartner:
   handler: control/partners/post.handler
   events:

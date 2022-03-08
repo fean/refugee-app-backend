@@ -1,10 +1,10 @@
-import * as mongoose from "mongoose";
+import * as mongoose from 'mongoose'
 
-import { AccountType, ApprovalState } from "./enum"
-import { AccountDetails } from "./Account"
+import { AccountType, ApprovalState } from './enum'
+import { AccountDetails } from './Account'
 
 interface AccountDetailsRef extends AccountDetails {
-  _id: mongoose.Types.ObjectId,
+  _id: mongoose.Types.ObjectId
 }
 
 export interface ContactProps {
@@ -21,7 +21,10 @@ export interface ContactModel extends mongoose.Model<ContactProps> {
 const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
   state: { type: String, enum: Object.values(ApprovalState) },
   creator: {
-    _id: mongoose.Schema.Types.ObjectId,
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Account',
+    },
     type: { type: String, enum: Object.values(AccountType) } as any,
     orgName: String,
     name: String,
@@ -38,7 +41,10 @@ const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
     website: String,
   },
   receiver: {
-    _id: mongoose.Schema.Types.ObjectId,
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Account',
+    },
     type: { type: String, enum: Object.values(AccountType) } as any,
     orgName: String,
     name: String,
@@ -53,7 +59,7 @@ const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
       coordinates: [Number],
     },
     website: String,
-  }
+  },
 })
 
 contactSchema.statics.findUserContacts = async function (
@@ -62,14 +68,10 @@ contactSchema.statics.findUserContacts = async function (
 ): Promise<Array<ContactProps>> {
   const userObjectId = new mongoose.Types.ObjectId(userId)
   const results = await this.find({
-    $or: [
-      { 'creator._id': userObjectId },
-      { 'receiver._id': userObjectId },
-    ],
+    $or: [{ 'creator._id': userObjectId }, { 'receiver._id': userObjectId }],
   })
 
   return results
 }
 
-export const Contact = mongoose.model<ContactProps, ContactModel>("Contact", contactSchema)
-
+export const Contact = mongoose.model<ContactProps, ContactModel>('Contact', contactSchema)
