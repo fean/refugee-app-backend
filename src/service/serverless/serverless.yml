@@ -16,6 +16,13 @@ provider:
   environment: ${file(./serverless/environment.yml)}
   httpApi:
     payload: '2.0'
+    authorizers:
+      auth0Authorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: https://samaritan-app.eu.auth0.com/
+        audience:
+          - https://api.samaritan-app.eu
 
 custom:
   webpack:

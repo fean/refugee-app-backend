@@ -1,21 +1,15 @@
-import {
-  createResponse,
-  createValidationError,
-  getRandomToken,
-  sanitizePhone,
-  sanitizeUrl,
-} from '../../utils'
+import { createResponse, createValidationError, getRandomToken, sanitizePhone } from '../../utils'
 import { Auth0API, CaptchaAPI, MapBoxApi } from '../../api'
 
 import { AccountType, ActivityState, ErrorCodes } from '../../models/enum'
-import { partnerCreationSchema } from '../../models/request'
+import { homeownerCreationSchema } from '../../models/request'
 import { connect, disconnect, Account } from '../../models'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
-    const { error, value: request } = partnerCreationSchema.validate(
+    const { error, value: request } = homeownerCreationSchema.validate(
       JSON.parse(event.body as string),
     )
     if (error) {
@@ -59,12 +53,11 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     const account = new Account({
       authRef: userId,
       state: ActivityState.Inactive,
-      activationKey: getRandomToken(),
       mailActivationKey: getRandomToken(),
+      pushTokens: [],
       details: {
-        type: AccountType.Partner,
-        orgName: request.orgName,
-        name: request.contact,
+        type: AccountType.Homeowner,
+        name: request.name,
         address: request.address,
         postal: request.postal,
         city: request.city,
@@ -75,7 +68,6 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
           type: 'Point',
           coordinates,
         },
-        website: sanitizeUrl(request.website),
       },
     })
 
@@ -87,11 +79,9 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       id: account._id.toString(),
       state: account.state,
       name: account.details.name,
-      orgName: account.details.orgName,
       contact: {
         phone: account.details.phone,
         email: account.details.email,
-        website: account.details.website,
       },
       location: {
         address: account.details.address,
@@ -103,7 +93,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     })
   } catch (error) {
     console.error(error)
-    return { statusCode: 500 }
+    return createResponse(500, { code: ErrorCodes.Generic })
   } finally {
     await disconnect()
   }

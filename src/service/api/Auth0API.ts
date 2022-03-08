@@ -1,8 +1,7 @@
-import { OAuthClient, AxiosClient } from "@trunkrs/common/services/client"
-import { Auth0Environment } from "../env/Auth0"
-import { OAuthResponse } from "@trunkrs/common/services/client/OAuthClient"
-import { getTokenClaims } from "../utils"
-
+import { OAuthClient, AxiosClient } from '@trunkrs/common/services/client'
+import { Auth0Environment } from '../env/Auth0'
+import { OAuthResponse } from '@trunkrs/common/services/client/OAuthClient'
+import { getTokenClaims } from '../utils'
 
 export class Auth0API {
   private static http = new AxiosClient()
@@ -12,13 +11,14 @@ export class Auth0API {
   private static lastTokenExp?: number
 
   private static async getMgmtApiToken(): Promise<string> {
-    const isTokenValid = Auth0API.lastToken && Date.now() < (Auth0API.lastTokenExp ?? 8640000000000000) * 1000
+    const isTokenValid =
+      Auth0API.lastToken && Date.now() < (Auth0API.lastTokenExp ?? 8640000000000000) * 1000
     if (!isTokenValid) {
       const result = await Auth0API.client.clientCredentialsFlow({
         domain: `https://${Auth0Environment.domain}`,
-        audience: `https://${Auth0Environment.domain}/api/v2`,
-        clientId: Auth0Environment.management.clientId,
-        clientSecret: Auth0Environment.management.clientSecret
+        audience: `https://${Auth0Environment.domain}/api/v2/`,
+        clientId: Auth0Environment.public.clientId,
+        clientSecret: Auth0Environment.public.clientSecret,
       })
 
       Auth0API.lastToken = result.accessToken
@@ -37,10 +37,10 @@ export class Auth0API {
         Authorization: `Bearer ${token}`,
       },
       params: {
-        connect: 'passwordless',
+        connection: 'email',
         email,
         email_verified: true,
-      }
+      },
     })
 
     return result.user_id
@@ -55,12 +55,12 @@ export class Auth0API {
         connection: 'email',
         email,
         send: 'code',
-      }
+      },
     })
   }
 
   public static async exchangeOTP(email: string, otp: string): Promise<OAuthResponse> {
-    const result = await Auth0API.http.post<OAuthResponse>({
+    const result = await Auth0API.http.post<any>({
       url: `https://${Auth0Environment.domain}/oauth/token`,
       params: {
         client_id: Auth0Environment.public.clientId,
@@ -70,10 +70,17 @@ export class Auth0API {
         realm: 'email',
         grant_type: 'http://auth0.com/oauth/grant-type/passwordless/otp',
         otp,
-        scope: 'offline_access',
-      }
+        scope: 'offline_access openid profile',
+      },
     })
 
-    return result
+    return {
+      idToken: result.id_token,
+      accessToken: result.access_token,
+      expiresIn: result.expires_in,
+      scope: result.scope,
+      refreshToken: result.refresh_token,
+      tokenType: result.token_type,
+    }
   }
 }

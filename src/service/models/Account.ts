@@ -1,6 +1,6 @@
-import * as mongoose from "mongoose";
+import * as mongoose from 'mongoose'
 
-import { AccountType, ActivityState } from "./enum"
+import { AccountType, ActivityState } from './enum'
 
 export interface AccountDetails {
   type: AccountType
@@ -13,14 +13,14 @@ export interface AccountDetails {
   email?: string
   phone?: string
   coords?: {
-    type: 'Point',
-    coordinates: [number, number],
+    type: 'Point'
+    coordinates: [number, number]
   }
   website?: string
 }
 
-interface AccountModel {
-  _id: mongoose.Types.ObjectId,
+interface AccountProps {
+  _id: mongoose.Types.ObjectId
   authRef: string
   state: ActivityState
   mailActivationKey?: string
@@ -29,7 +29,11 @@ interface AccountModel {
   details: AccountDetails
 }
 
-const accountSchema = new mongoose.Schema<AccountModel>({
+interface AccountModel extends mongoose.Model<AccountProps> {
+  getByExternalRef: (reference: string) => Promise<AccountProps>
+}
+
+const accountSchema = new mongoose.Schema<AccountProps, AccountModel>({
   authRef: String,
   state: { type: String, enum: Object.values(ActivityState) } as any,
   mailActivationKey: String,
@@ -50,7 +54,18 @@ const accountSchema = new mongoose.Schema<AccountModel>({
       coordinates: [Number],
     },
     website: String,
-  }
+  },
 })
 
-export const Account = mongoose.model<AccountModel>('Account', accountSchema)
+accountSchema.statics.getByExternalRef = async function (
+  this: typeof Account,
+  reference: string,
+): Promise<typeof Account> {
+  const result = await this.findOne({
+    authRef: reference,
+  })
+
+  return result as any
+} as any
+
+export const Account = mongoose.model<AccountProps, AccountModel>('Account', accountSchema)

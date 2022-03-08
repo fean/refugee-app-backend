@@ -1,4 +1,9 @@
 export enum ErrorCodes {
   AddressNotFound = 'ADDRESS_NOT_FOUND',
-  InvalidCaptcha = 'InvalidCaptcha',
+  InvalidCaptcha = 'INVALID_CAPTCHA',
+  Generic = 'GENERIC_ERROR',
+  UnknownAccount = 'UNKNOWN_ACCOUNT',
+  BadOTP = 'BAD_OTP',
+  EmailAlreadyExists = 'EMAIL_KNOWN',
+  UnknownEntity = 'UNKNOWN_ENTITY',
 }

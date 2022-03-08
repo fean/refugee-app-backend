@@ -18,3 +18,33 @@ PostPartner:
     - httpApi:
         method: POST
         path: /partners
+
+PostHomeowner:
+  handler: control/homeowners/post.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /homeowners
+
+PostAuthToken:
+  handler: control/auth/token/post.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /auth/token
+
+PostAuthStart:
+  handler: control/auth/start/post.handler
+  events:
+    - httpApi:
+        method: POST
+        path: /auth/start
+
+GetMe:
+  handler: control/me/get.handler
+  events:
+    - httpApi:
+        method: GET
+        path: /me
+        authorizer:
+          name: auth0Authorizer
