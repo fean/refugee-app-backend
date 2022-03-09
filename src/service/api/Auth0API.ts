@@ -83,4 +83,13 @@ export class Auth0API {
       tokenType: result.token_type,
     }
   }
+
+  public static refreshToken(refreshToken: string): Promise<OAuthResponse> {
+    return Auth0API.client.refreshToken({
+      domain: `https://${Auth0Environment.domain}`,
+      clientId: Auth0Environment.public.clientId,
+      clientSecret: Auth0Environment.public.clientSecret,
+      refreshToken,
+    })
+  }
 }

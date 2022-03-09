@@ -17,6 +17,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     return createResponse(200, {
       id: account._id.toString(),
       state: account.state,
+      type: account.details.type,
       name: account.details.name,
       orgName: account.details.orgName,
       contact: {
