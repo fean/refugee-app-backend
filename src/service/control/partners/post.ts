@@ -5,7 +5,7 @@ import {
   sanitizePhone,
   sanitizeUrl,
 } from '../../utils'
-import { Auth0API, CaptchaAPI, Email, MapBoxApi, Template } from '../../api'
+import { Auth0API, Email, MapBoxApi, Template } from '../../api'
 
 import { AccountType, ActivityState, ErrorCodes } from '../../models/enum'
 import { partnerCreationSchema } from '../../models/request'
@@ -23,15 +23,15 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       return createValidationError(error)
     }
 
-    const isValid = CaptchaAPI.verifyRequestToken(request.captchaToken)
-    if (!isValid) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          code: ErrorCodes.InvalidCaptcha,
-        }),
-      }
-    }
+    // const isValid = CaptchaAPI.verifyRequestToken(request.captchaToken)
+    // if (!isValid) {
+    //   return {
+    //     statusCode: 400,
+    //     body: JSON.stringify({
+    //       code: ErrorCodes.InvalidCaptcha,
+    //     }),
+    //   }
+    // }
 
     await connect()
     const exists = await Account.exists({ 'details.email': request.email })
@@ -84,33 +84,26 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
 
     await account.save()
 
-    await Promise.all([
-      Email.sendEmail(
-        Template.ConfirmEmail,
-        {
-          action_url: `https://api.samaritan-app.eu/auth/verify?token=${account.mailActivationKey}`,
-        },
-        account.details.email as string,
-      ),
-      Email.sendEmail(
-        Template.PartnerApproval,
-        {
-          org_name: account.details.orgName,
-          org_contact: account.details.name,
-          org_address: account.details.address,
-          org_postal: account.details.postal,
-          org_city: account.details.city,
-          org_country: account.details.country,
-          org_phone: account.details.phone,
-          org_email: account.details.email,
-          org_website: account.details.website,
-          org_mission: account.details.mission,
-          org_approval: account.approvalReason,
-          approve_url: `https://api.samaritan-app.eu/auth/approve?token=${account.activationKey}`,
-        },
-        ...Environment.crewDestinations,
-      ),
-    ])
+    await Email.sendEmail(
+      Template.PartnerApproval,
+      {
+        org_name: account.details.orgName,
+        org_contact: account.details.name,
+        org_address: account.details.address,
+        org_postal: account.details.postal,
+        org_city: account.details.city,
+        org_country: account.details.country,
+        org_phone: account.details.phone,
+        org_email: account.details.email,
+        org_website: account.details.website,
+        org_mission: account.details.mission,
+        org_approval: account.approvalReason,
+        approve_url: `https://api.samaritan-app.eu/auth/approve?token=${encodeURIComponent(
+          account.activationKey as string,
+        )}`,
+      },
+      ...Environment.crewDestinations,
+    )
 
     return createResponse(201, {
       id: account._id.toString(),

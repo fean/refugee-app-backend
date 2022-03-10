@@ -1,5 +1,5 @@
 import { createResponse, createValidationError, getRandomToken, sanitizePhone } from '../../utils'
-import { Auth0API, CaptchaAPI, Email, MapBoxApi, Template } from '../../api'
+import { Auth0API, CaptchaAPI, MapBoxApi } from '../../api'
 
 import { AccountType, ActivityState, ErrorCodes } from '../../models/enum'
 import { homeownerCreationSchema } from '../../models/request'
@@ -52,7 +52,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     const userId = await Auth0API.createUserAccount(request.email)
     const account = new Account({
       authRef: userId,
-      state: ActivityState.Inactive,
+      state: ActivityState.Active,
       mailActivationKey: getRandomToken(),
       pushTokens: [],
       details: {
@@ -87,13 +87,13 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     })
     await room.save()
 
-    await Email.sendEmail(
-      Template.ConfirmEmail,
-      {
-        action_url: `https://api.samaritan-app.eu/auth/verify?token=${account.mailActivationKey}`,
-      },
-      account.details.email as string,
-    )
+    // await Email.sendEmail(
+    //   Template.ConfirmEmail,
+    //   {
+    //     action_url: `https://api.samaritan-app.eu/auth/verify?token=${account.mailActivationKey}`,
+    //   },
+    //   account.details.email as string,
+    // )
 
     return createResponse(201, {
       id: account._id.toString(),

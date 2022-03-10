@@ -17,7 +17,7 @@ export const mapToHomeownerContact = (contact: ContactProps) => ({
     postal: contact.creator.postal,
     city: contact.creator.city,
     country: contact.creator.country,
-    coords: contact.creator.coords,
+    coords: contact.creator.coords?.coordinates,
   },
 })
 
@@ -37,7 +37,8 @@ export const mapToPartnerContact = (contact: ContactProps) => ({
     postal: contact.receiver.postal,
     city: contact.receiver.city,
     country: contact.receiver.country,
-    coords: contact.receiver.coords,
+    coords: contact.receiver.coords?.coordinates,
+    nrBeds: contact.receiver.beds,
   },
 })
 
@@ -60,7 +61,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
 
     const mapper =
       account.details.type === AccountType.Homeowner ? mapToHomeownerContact : mapToPartnerContact
-    return createResponse(200, contacts.map(mapper))
+    return createResponse(200, contacts.map(mapper as any))
   } catch (error) {
     console.error(error)
     return createResponse(500, { code: ErrorCodes.Generic })

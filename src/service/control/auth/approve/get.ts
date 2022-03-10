@@ -34,9 +34,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     }
 
     account.activationKey = undefined
-    if (!account.mailActivationKey) {
-      account.state = ActivityState.Active
-    }
+    account.state = ActivityState.Active
 
     await account.save()
 
