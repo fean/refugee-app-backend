@@ -3,7 +3,7 @@ import { createResponse, createValidationError, getSubject } from '../../../util
 import { contactApprovalSchema } from '../../../models/request'
 import { ActivityState, ApprovalState, ErrorCodes } from '../../../models/enum'
 import { Account, connect, Contact, disconnect } from '../../../models'
-import { Email, Template } from '../../../api'
+import { Email, FCMAPI, Template } from '../../../api'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -39,19 +39,30 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       contact.state = ApprovalState.Approved
       await contact.save()
 
-      await Email.sendEmail(
-        Template.HomeownerApproval,
-        {
-          homeowner_name: contact.receiver.name,
-          homeowner_address: contact.receiver.address,
-          homeowner_post: contact.receiver.postal,
-          homeowner_city: contact.receiver.city,
-          homeowner_beds: contact.receiver.beds,
-          homeowner_phone: contact.receiver.phone,
-          homeowner_email: contact.receiver.email,
-        },
-        contact.creator.email as string,
-      )
+      const creatorAccount = await Account.findOne({ _id: contact.creator._id }, 'pushTokens')
+
+      await Promise.all([
+        Email.sendEmail(
+          Template.HomeownerApproval,
+          {
+            homeowner_name: contact.receiver.name,
+            homeowner_address: contact.receiver.address,
+            homeowner_post: contact.receiver.postal,
+            homeowner_city: contact.receiver.city,
+            homeowner_beds: contact.receiver.beds,
+            homeowner_phone: contact.receiver.phone,
+            homeowner_email: contact.receiver.email,
+          },
+          contact.creator.email as string,
+        ),
+        ...(creatorAccount?.pushTokens || []).map((target) =>
+          FCMAPI.sendMessage(
+            target,
+            'Details have been shared with you',
+            `${contact.receiver.name} has just shared their details with you. All of their details are now available to you in the app.`,
+          ),
+        ),
+      ])
 
       return createResponse(204)
     }

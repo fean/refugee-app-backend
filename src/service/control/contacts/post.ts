@@ -7,7 +7,7 @@ import { ActivityState, ApprovalState, ErrorCodes } from '../../models/enum'
 import { Account, connect, Contact, disconnect, Room } from '../../models'
 
 import { mapToPartnerContact } from './get'
-import { Email, Template } from '../../api'
+import { Email, FCMAPI, Template } from '../../api'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
@@ -41,19 +41,29 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     }
 
     const contact = new Contact({
+      origin: room._id,
       state: ApprovalState.Pending,
       creator: { _id: account._id, ...account.details },
       receiver: { _id: roomOwner._id, ...roomOwner.details, beds: room.beds },
     })
     await contact.save()
 
-    await Email.sendEmail(
-      Template.ContactRequest,
-      {
-        org_name: contact.creator.orgName,
-      },
-      contact.receiver.email as string,
-    )
+    await Promise.all([
+      Email.sendEmail(
+        Template.ContactRequest,
+        {
+          org_name: contact.creator.orgName,
+        },
+        contact.receiver.email as string,
+      ),
+      ...roomOwner.pushTokens.map((target) =>
+        FCMAPI.sendMessage(
+          target,
+          'New contact request',
+          `${contact.creator.orgName} has requested your details. Check it out now in the app.`,
+        ),
+      ),
+    ])
 
     return createResponse(201, mapToPartnerContact(contact))
   } catch (error) {

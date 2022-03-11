@@ -24,7 +24,8 @@ export const mapToHomeownerContact = (contact: ContactProps) => ({
 export const mapToPartnerContact = (contact: ContactProps) => ({
   id: contact._id.toString(),
   state: contact.state,
-  name: contact.state === ApprovalState.Approved ? contact.receiver.orgName : undefined,
+  origin: contact.origin.toString(),
+  name: contact.state === ApprovalState.Approved ? contact.receiver.name : undefined,
   contact:
     contact.state === ApprovalState.Approved
       ? {

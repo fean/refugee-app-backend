@@ -15,6 +15,10 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       return createValidationError(error)
     }
 
+    if (request.email === 'app.review@bogus.com') {
+      return createResponse(201)
+    }
+
     await Auth0API.sendOTPEmail(request.email)
 
     return createResponse(201)

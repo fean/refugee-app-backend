@@ -1,7 +1,7 @@
 import { createResponse } from '../../../utils'
 import { ActivityState, ErrorCodes } from '../../../models/enum'
 import { Account, connect, disconnect } from '../../../models'
-import { Email, Template } from '../../../api'
+import { Email, FCMAPI, Template } from '../../../api'
 import Environment from '../../../env'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
@@ -38,13 +38,22 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
 
     await account.save()
 
-    await Email.sendEmail(
-      Template.AccountApproval,
-      {
-        org_name: account.details.orgName,
-      },
-      account.details.email as string,
-    )
+    await Promise.all([
+      Email.sendEmail(
+        Template.AccountApproval,
+        {
+          org_name: account.details.orgName,
+        },
+        account.details.email as string,
+      ),
+      ...account.pushTokens.map((target) =>
+        FCMAPI.sendMessage(
+          target,
+          "You've been approved",
+          'Your profile has just been approved by the Samaritan crew. Welcome to Samaritan!',
+        ),
+      ),
+    ])
 
     return {
       statusCode: 200,

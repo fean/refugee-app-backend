@@ -10,7 +10,7 @@ export class Auth0API {
   private static lastToken?: string
   private static lastTokenExp?: number
 
-  private static async getMgmtApiToken(): Promise<string> {
+  public static async getMgmtApiToken(): Promise<string> {
     const isTokenValid =
       Auth0API.lastToken && Date.now() < (Auth0API.lastTokenExp ?? 8640000000000000) * 1000
     if (!isTokenValid) {
@@ -70,6 +70,30 @@ export class Auth0API {
         realm: 'email',
         grant_type: 'http://auth0.com/oauth/grant-type/passwordless/otp',
         otp,
+        scope: 'offline_access openid profile',
+      },
+    })
+
+    return {
+      idToken: result.id_token,
+      accessToken: result.access_token,
+      expiresIn: result.expires_in,
+      scope: result.scope,
+      refreshToken: result.refresh_token,
+      tokenType: result.token_type,
+    }
+  }
+
+  public static async doPasswordAuth(username: string, password: string) {
+    const result = await Auth0API.http.post<any>({
+      url: `https://${Auth0Environment.domain}/oauth/token`,
+      params: {
+        client_id: Auth0Environment.public.clientId,
+        client_secret: Auth0Environment.public.clientSecret,
+        audience: Auth0Environment.public.audience,
+        username,
+        password,
+        grant_type: 'password',
         scope: 'offline_access openid profile',
       },
     })

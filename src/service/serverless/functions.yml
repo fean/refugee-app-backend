@@ -56,10 +56,10 @@ GetMe:
           name: auth0Authorizer
 
 GetRooms:
-  handler: control/rooms/get.handler
+  handler: control/rooms/put.handler
   events:
     - httpApi:
-        method: GET
+        method: PUT
         path: /rooms
         authorizer:
           name: auth0Authorizer

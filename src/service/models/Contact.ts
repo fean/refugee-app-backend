@@ -10,6 +10,7 @@ interface AccountDetailsRef extends AccountDetails {
 export interface ContactProps {
   _id: mongoose.Types.ObjectId
   state: ApprovalState
+  origin: mongoose.Types.ObjectId
   creator: AccountDetailsRef
   receiver: AccountDetailsRef & { beds?: number }
 }
@@ -23,6 +24,10 @@ export interface ContactModel extends mongoose.Model<ContactProps> {
 
 const contactSchema = new mongoose.Schema<ContactProps, ContactModel>({
   state: { type: String, enum: Object.values(ApprovalState) },
+  origin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Room',
+  },
   creator: {
     _id: {
       type: mongoose.Schema.Types.ObjectId,

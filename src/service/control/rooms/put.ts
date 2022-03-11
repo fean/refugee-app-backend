@@ -1,11 +1,17 @@
-import { createResponse, getSubject } from '../../utils'
+import { createResponse, createValidationError, getSubject } from '../../utils'
 import { ActivityState, ErrorCodes } from '../../models/enum'
 import { Account, connect, disconnect, Room } from '../../models'
+import { roomsRequestSchema } from '../../models/request'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
+    const { error, value: request } = roomsRequestSchema.validate(JSON.parse(event.body as string))
+    if (error) {
+      return createValidationError(error)
+    }
+
     const subject = getSubject(event)
 
     await connect()
@@ -17,9 +23,10 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
       return createResponse(403, { code: ErrorCodes.AccountInactive })
     }
 
-    const { distance, lat, lng } =
-      event.queryStringParameters as AWSLambda.APIGatewayProxyEventQueryStringParameters
-    const results = await Room.findInArea([Number(lng), Number(lat)], Number(distance))
+    const results = await Room.findInArea(
+      [Number(request.lng), Number(request.lat)],
+      Number(request.distance) * 4.5,
+    )
 
     return createResponse(
       200,

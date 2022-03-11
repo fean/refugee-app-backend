@@ -6,8 +6,15 @@ import { Auth0API } from '../../../api'
 import { TokenRequest, tokenRequestSchema } from '../../../models/request'
 import { ErrorCodes, TokenGrantType } from '../../../models/enum'
 import { OAuthResponse } from '@trunkrs/common/services/client/OAuthClient'
+import Environment from '../../../env'
 
 const doTokenRequest = async (request: TokenRequest): Promise<OAuthResponse> => {
+  const isStoreRequest =
+    request.email === 'app.review@bogus.com' && request.otp === Environment.storeReviewOtp
+  if (isStoreRequest) {
+    return Auth0API.doPasswordAuth(request.email, Environment.storeReviewPassword)
+  }
+
   switch (request.type) {
     case TokenGrantType.OTP:
       return Auth0API.exchangeOTP(request.email, request.otp)
