@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 
-import { AccountType, ActivityState } from './enum'
+import { AccountType, ActivityState, OwnerShipType } from './enum'
 
 export interface AccountDetails {
   type: AccountType
@@ -18,6 +18,8 @@ export interface AccountDetails {
   }
   website?: string
   mission?: string
+  ownershipType?: OwnerShipType
+  beds?: number
 }
 
 interface AccountProps {
@@ -58,6 +60,8 @@ const accountSchema = new mongoose.Schema<AccountProps, AccountModel>({
     },
     website: String,
     mission: String,
+    ownershipType: { type: String, enum: Object.values(OwnerShipType) },
+    beds: Number,
   },
 })
 

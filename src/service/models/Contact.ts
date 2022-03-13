@@ -81,7 +81,7 @@ contactSchema.statics.findUserContacts = async function (
 
   const results = await this.find({
     [field]: userObjectId,
-  })
+  }).sort({ _id: -1 })
 
   return results
 }

@@ -52,7 +52,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     const userId = await Auth0API.createUserAccount(request.email)
     const account = new Account({
       authRef: userId,
-      state: ActivityState.Active,
+      state: ActivityState.Inactive,
       mailActivationKey: getRandomToken(),
       pushTokens: [],
       details: {
@@ -68,32 +68,12 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
           type: 'Point',
           coordinates,
         },
+        beds: request.beds,
+        ownershipType: request.ownershipType,
       },
     })
 
     await account.save()
-
-    const room = new Room({
-      ownerShip: request.ownershipType,
-      owner: account._id,
-      beds: request.beds,
-      location: {
-        address: account.details.address,
-        postal: account.details.postal,
-        city: account.details.city,
-        countryCode: account.details.country,
-        coords: account.details.coords,
-      },
-    })
-    await room.save()
-
-    // await Email.sendEmail(
-    //   Template.ConfirmEmail,
-    //   {
-    //     action_url: `https://api.samaritan-app.eu/auth/verify?token=${account.mailActivationKey}`,
-    //   },
-    //   account.details.email as string,
-    // )
 
     return createResponse(201, {
       id: account._id.toString(),
