@@ -81,7 +81,9 @@ contactSchema.statics.findUserContacts = async function (
 
   const results = await this.find({
     [field]: userObjectId,
-  }).sort({ _id: -1 })
+  })
+    .sort({ _id: -1 })
+    .select('_id state origin receiver creator')
 
   return results
 }

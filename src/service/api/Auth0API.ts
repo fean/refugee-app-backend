@@ -46,6 +46,17 @@ export class Auth0API {
     return result.user_id
   }
 
+  public static async deleteUserAccount(userId: string): Promise<void> {
+    const token = await Auth0API.getMgmtApiToken()
+
+    await Auth0API.http.delete({
+      url: `https://${Auth0Environment.domain}/api/v2/users/${userId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  }
+
   public static async sendOTPEmail(email: string): Promise<void> {
     await Auth0API.http.post({
       url: `https://${Auth0Environment.domain}/passwordless/start`,

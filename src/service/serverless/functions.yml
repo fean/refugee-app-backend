@@ -55,6 +55,15 @@ GetMe:
         authorizer:
           name: auth0Authorizer
 
+DeleteMe:
+  handler: control/me/delete.handler
+  events:
+    - httpApi:
+        method: DELETE
+        path: /me
+        authorizer:
+          name: auth0Authorizer
+
 GetRooms:
   handler: control/rooms/put.handler
   events:
