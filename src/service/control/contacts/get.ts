@@ -45,6 +45,7 @@ export const mapToPartnerContact = (contact: ContactProps) => ({
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
+  context,
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
     const subject = getSubject(event)
@@ -67,6 +68,6 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     console.error(error)
     return createResponse(500, { code: ErrorCodes.Generic })
   } finally {
-    await disconnect()
+    await disconnect(context.getRemainingTimeInMillis() - 150)
   }
 }

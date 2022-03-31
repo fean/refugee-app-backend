@@ -7,7 +7,7 @@ import { TokenRequest, tokenRequestSchema } from '../../../models/request'
 import { AccountType, ActivityState, ErrorCodes, TokenGrantType } from '../../../models/enum'
 import { OAuthResponse } from '@trunkrs/common/services/client/OAuthClient'
 import Environment from '../../../env'
-import { Account, connect, Room } from '../../../models'
+import { Account, connect, disconnect, Room } from '../../../models'
 
 const doTokenRequest = async (request: TokenRequest): Promise<OAuthResponse> => {
   const isStoreRequest =
@@ -26,6 +26,7 @@ const doTokenRequest = async (request: TokenRequest): Promise<OAuthResponse> => 
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
+  context,
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
     const { error, value: request } = tokenRequestSchema.validate(JSON.parse(event.body as string))
@@ -75,11 +76,16 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     })
   } catch (error) {
     const axiosError = error as AxiosError
-    if (axiosError.response && axiosError.response.status === 400) {
+    if (
+      axiosError.response &&
+      (axiosError.response.status === 400 || axiosError.response.status === 403)
+    ) {
       return createResponse(400, { code: ErrorCodes.BadOTP })
     } else {
       console.error(error)
       return createResponse(500)
     }
+  } finally {
+    await disconnect(context.getRemainingTimeInMillis() - 150)
   }
 }

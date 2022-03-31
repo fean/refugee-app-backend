@@ -14,6 +14,7 @@ import Environment from '../../env'
 
 export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
   event,
+  context,
 ): Promise<AWSLambda.APIGatewayProxyResultV2> => {
   try {
     const { error, value: request } = partnerCreationSchema.validate(
@@ -127,6 +128,6 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = async (
     console.error(error)
     return { statusCode: 500 }
   } finally {
-    await disconnect()
+    await disconnect(context.getRemainingTimeInMillis() - 150)
   }
 }
