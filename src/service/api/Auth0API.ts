@@ -98,6 +98,7 @@ export class Auth0API {
   public static async doPasswordAuth(username: string, password: string) {
     const result = await Auth0API.http.post<any>({
       url: `https://${Auth0Environment.domain}/oauth/token`,
+      timeout: 25000,
       params: {
         client_id: Auth0Environment.public.clientId,
         client_secret: Auth0Environment.public.clientSecret,
