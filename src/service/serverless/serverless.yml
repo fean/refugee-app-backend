@@ -28,6 +28,10 @@ provider:
               'ses:FromAddress': 'crew@samaritan-app.eu'
   httpApi:
     payload: '2.0'
+    cors:
+      allowedOrigins:
+        - https://portal.samaritan-app.eu
+        - http://localhost:3000
     authorizers:
       auth0Authorizer:
         type: jwt
